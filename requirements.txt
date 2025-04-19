@@ -1,0 +1,17 @@
+scikit-learn~=1.5.2
+pandas~=2.2.2
+seaborn
+numpy~=1.26.4
+matplotlib~=3.10.0
+torch~=2.6.0
+torchvision
+torchaudio
+torch-scatter -f https://data.pyg.org/whl/torch-2.6.0+cpu.html #2.6.0 and +cpu: see torch scatter docs
+torch-sparse -f https://data.pyg.org/whl/torch-2.6.0+cpu.html
+torch-cluster -f https://data.pyg.org/whl/torch-2.6.0+cpu.html
+torch-spline-conv -f https://data.pyg.org/whl/torch-2.6.0+cpu.html
+torch-geometric -f https://data.pyg.org/whl/torch-2.6.0+cpu.html
+node2vec~=0.5.0
+networkx~=3.4.2
+tqdm~=4.67.1
+umap
