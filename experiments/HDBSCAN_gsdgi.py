@@ -2,6 +2,7 @@ import csv
 import hdbscan
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score, \
     average_precision_score
+from matplotlib import pyplot as plt
 import numpy as np
 from src.data_utils import e_load, timer, save_anomaly_scores
 from sklearn.model_selection import ParameterGrid
