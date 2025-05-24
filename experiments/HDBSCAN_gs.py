@@ -1,15 +1,18 @@
 import csv
-from sklearn.cluster import DBSCAN
+from matplotlib import pyplot as plt
 import hdbscan
-from sklearn.decomposition import PCA
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score, \
     average_precision_score
 import numpy as np
+from sklearn.model_selection import ParameterSampler
 from src.data_utils import e_load, timer, save_anomaly_scores
-from src.embeddings import GraphSAGEModel, train_gs, get_emb_gs
+from src.embeddings import GraphSAGEModel, train_gs, get_emb_gs, embeddings_grid, models_grid
 from src.visualization import plot_confusion_matrix
 
-timer(True, 'GraphSAGE and HDBSCAN')
+embedding_method = 'GraphSAGE'
+model = 'HDBSCAN'
+
+timer(True, f'{embedding_type} and {model}')
 
 # Load data
 data = e_load()[0]
@@ -19,15 +22,11 @@ y = data.y
 
 # Grid search
 
-# embedding_method = 'GraphSAGE'
-# model_type = 'HDBSCAN'
-#
 # best_f1 = float('-inf')
-#
-# csv_file = '../data/configs/results_gs_hdbscan.csv'
+# csv_file = '../data/configs/results_{embedding_type}_{model}.csv'
 # headers = ['Embedding Params', 'Model Params', 'Accuracy', 'Precision', 'Recall', 'F1 Score', 'PR-AUC']
-#
 # embeddings_cache = {}
+
 # # parameter search
 # with open(csv_file, mode='w', newline='') as file:
 #     writer = csv.writer(file)
@@ -103,10 +102,10 @@ embeddings = get_emb_gs(gsmodel_if,data,scaled=False, pca_scaled=True)
 print("Embeddings generated")
 
 # # Save embeddings
-# np.save('../data/embeddings/hdbscan_graphsage.npy', embeddings)
+# np.save('../data/embeddings/{model}_{embedding_type}.npy', embeddings)
 
 # # Load embeddings
-# embeddings = np.load('../data/embeddings/hdbscan_graphsage.npy')
+# embeddings = np.load('../data/embeddings/{model}_{embedding_type}.npy')
 
 # for graphsage: 100 and 1
 clusterer = hdbscan.HDBSCAN(min_cluster_size=100, min_samples=1, metric='euclidean')
@@ -133,11 +132,11 @@ recall = recall_score(y_labelled, y_pred_mapped)
 f1 = f1_score(y_labelled, y_pred_mapped)
 pr_auc = average_precision_score(y_labelled, y_pred_mapped)
 
-print(f"GraphSAGE + HDBSCAN Accuracy: {accuracy}")
-print(f"GraphSAGE + HDBSCAN Precision: {precision}")
-print(f"GraphSAGE + HDBSCAN Recall: {recall}")
-print(f"GraphSAGE + HDBSCAN Score: {f1}")
-print(f"GraphSAGE + HDBSCAN Score: {pr_auc}")
+print(f"{embedding_type} + {model} Accuracy: {accuracy}")
+print(f"{embedding_type} + {model} Precision: {precision}")
+print(f"{embedding_type} + {model} Recall: {recall}")
+print(f"{embedding_type} + {model} Score: {f1}")
+print(f"{embedding_type} + {model} Score: {pr_auc}")
 
 print("Classification Report:")
 print(classification_report(y_labelled, y_pred_mapped, digits=4))
@@ -147,7 +146,7 @@ timer(False, 'GraphSAGE and HDBSCAN')
 # Visualization
 
 # Plot Confusion matrix
-plot_confusion_matrix(x_known.numpy(), y_labelled, y_pred_labelled, title="GraphSAGE + HDBSCAN Confusion Matrix")
+plot_confusion_matrix(x_known.numpy(), y_labelled, y_pred_labelled, title=f"{embedding_type} + {model} Confusion Matrix")
 
 # Anomaly Score Distribution
 plt.hist(scores_known[y_labelled == 0], bins=50, alpha=0.6, label="Licit")
@@ -160,4 +159,4 @@ plt.tight_layout()
 plt.show()
 
 # Export scores
-save_anomaly_scores(scores_known, y_labelled, "HDBSCAN", "GraphSAGE")
+save_anomaly_scores(scores_known, y_labelled, f"{model}", f"{embedding_type}")
