@@ -154,4 +154,4 @@ plt.tight_layout()
 plt.show()
 
 # Export scores
-save_anomaly_scores(scores_known, y_labelled, f"{model}", f"{embedding_type}")
+save_anomaly_scores(scores_known, y_labelled, f"{model}", f"{embedding_method}")
